@@ -1,5 +1,5 @@
 export async function onRequestPost(context) {
-  const apiKey = context.env.ANTHROPIC_API_KEY;
+  const apiKey = context.env.api_chatbot;
 
   if (!apiKey) {
     return new Response(JSON.stringify({ error: "API key not configured" }), {
