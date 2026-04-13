@@ -1,15 +1,16 @@
 export async function onRequestPost(context) {
   const apiKey  = context.env.ELEVENLABS_API_KEY;
-  const voiceId = context.env.ELEVENLABS_VOICE_ID;
+  const defaultVoiceId = context.env.ELEVENLABS_VOICE_ID;
 
-  if (!apiKey || !voiceId) {
+  if (!apiKey || !defaultVoiceId) {
     return new Response(JSON.stringify({ error: "ElevenLabs not configured" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  const { text } = await context.request.json();
+  const body = await context.request.json();
+  const { text, voiceId } = body;
 
   if (!text || !text.trim()) {
     return new Response(JSON.stringify({ error: "No text provided" }), {
@@ -18,8 +19,10 @@ export async function onRequestPost(context) {
     });
   }
 
+  const selectedVoiceId = voiceId || defaultVoiceId;
+
   const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    `https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}`,
     {
       method: "POST",
       headers: {
